@@ -23,14 +23,14 @@
                         <label for="input-file" style="cursor: pointer; text-transform: none">Chọn file</label>
                         <span onclick="removeFile()" class="font-weight-bold text-danger custom-file-container__image-clear" style="cursor: pointer">❌</span>
                     </h4>
-                    <form class="row">
+                    <form class="row" method="post">
+                        {% csrf_token %}
                         <div class="col-lg-6 col-md-6 col-sm-6 col-12">
                             <div id="select-audio" class="custom-file-container" data-upload-id="myFirstImage">
                                 <label class="d-none">Chọn file <a id="removeFile" href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image">X</a></label>
                                 <label class="custom-file-container__custom-file mt-0">
                                     <input id="input-file" type="file" class="custom-file-container__custom-file__custom-file-input"
-                                        accept="audio/*" required>
-                                    <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
+                                        accept="audio/*" required name="file-input">
                                     <span class="custom-file-container__custom-file__custom-file-control"></span>
                                 </label>
                                 <div class="custom-file-container__image-preview d-none"></div>
@@ -42,7 +42,6 @@
                                 <label class="custom-file-container__custom-file">
                                     <input type="file" class="custom-file-container__custom-file__custom-file-input"
                                         multiple>
-                                    <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
                                     <span class="custom-file-container__custom-file__custom-file-control"></span>
                                 </label>
                                 <div class="custom-file-container__image-preview"></div>
