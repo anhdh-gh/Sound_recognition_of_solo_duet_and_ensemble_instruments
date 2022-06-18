@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% load static %}
+
+{% block title-page %}Dashboard{% endblock %}
+
+{% block main-content-title %}QUẢN LÝ{% endblock %}
+{% block main-content %}
+    
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>
+        $("#sidebar-dashboard").addClass('active');
+        $("#route-page")
+            .append('<li class="breadcrumb-item"><a href="{% url 'main:home' %}"><i class="fas fa-home"></i> Home</a></li>')
+            .append('<li class="breadcrumb-item"><a href="{% url 'main:dashboard' %}"><span>Dashboard</span></a></li>');
+    </script>
+{% endblock %}
