@@ -15,12 +15,20 @@ Including another URLconf
 """
 # from django.contrib import admin
 from decorator_include import decorator_include
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
+
+from main.decorator import delete_file_input
 
 urlpatterns = [
     #    path('admin/', admin.site.urls),
 
     # main app
     path('', decorator_include([
+        delete_file_input
     ], 'main.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

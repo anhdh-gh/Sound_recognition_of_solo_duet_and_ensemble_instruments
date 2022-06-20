@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% load static %}
+
+{% block css %}
+    {{ block.super }}
+{% endblock %}
+
+{% block title-page %}Dashboard{% endblock %}
+
+{% block main-content-title %}EDIT FILE{% endblock %}
+{% block main-content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="payslip-title text-decoration-none mb-0" style="text-transform: none">Edit file</h4>
+                </div>
+                <div class="card-body">
+                    <h4 class="mb-3 d-flex justify-content-between">
+                        <label for="input-file" style="cursor: pointer; text-transform: none">File đã chọn</label>
+                        <a href="{% url 'main:delete-file' id=file.id %}" class="font-weight-bold text-danger custom-file-container__image-clear" style="cursor: pointer">❌</a>
+                    </h4>
+                    <form class="row" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div id="select-audio" class="custom-file-container" data-upload-id="myFirstImage">
+                                    <label class="d-none">Chọn file <a id="removeFile" href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image">X</a></label>
+                                    <label class="custom-file-container__custom-file mt-0">
+                                        <input id="input-file" type="file" class="custom-file-container__custom-file__custom-file-input"
+                                            accept="audio/wav" required name="file-input" value="{{ file.relative_path }}" disabled>
+                                        <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                    </label>
+                                    <div class="custom-file-container__image-preview d-none"></div>
+                                </div>
+
+                                <div class="custom-file-container d-none" data-upload-id="mySecondImage">
+                                    <label>Upload (Allow Multiple) <a href="javascript:void(0)"
+                                            class="custom-file-container__image-clear" title="Clear Image">x</a></label>
+                                    <label class="custom-file-container__custom-file">
+                                        <input type="file" class="custom-file-container__custom-file__custom-file-input"
+                                            multiple>
+                                        <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                    </label>
+                                    <div class="custom-file-container__image-preview"></div>
+                                </div>
+                            </div>
+
+                            <div id="wrapper-audio" class="col-lg-6 col-md-6 col-sm-6 col-12 d-flex align-items-end mt-sm-0 mt-3">
+                                <audio id="audio" controls class="w-100">
+                                    <source src="{{ file.relative_path }}" id="src" />
+                                </audio>
+                            </div>
+
+                        <div class="form-group col-12 mt-5">
+                            <h4 class="mb-3 d-flex justify-content-between">
+                                <label for="input-file-label" style="cursor: pointer; text-transform: none">Nhãn</label>
+                            </h4>
+
+                            <select class="form-control select" name="input-file-label" required>
+                                <option {% if file.label == 'Đơn tấu' %}selected="selected"{% endif %}>Đơn tấu</option>
+                                <option {% if file.label == 'Song tấu' %}selected="selected"{% endif %}>Song tấu</option>
+                                <option {% if file.label == 'Hòa tấu' %}selected="selected"{% endif %}>Hòa tấu</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-12 mt-4">
+                            <h4 class="mb-3 d-flex justify-content-between">
+                                <label for="input-file-label" style="cursor: pointer; text-transform: none">Nhạc cụ</label>
+                            </h4>
+
+                            <select class="form-control tagging" multiple="multiple" name="nhac_cu" required>
+                                <option {% for musical_instrument in file.musical_instruments.all %}{% if musical_instrument.name == 'Guitar' %}selected="selected"{% endif %}{% endfor %}>Guitar</option>
+                                <option {% for musical_instrument in file.musical_instruments.all %}{% if musical_instrument.name == 'Piano' %}selected="selected"{% endif %}{% endfor %}>Piano</option>
+                                <option {% for musical_instrument in file.musical_instruments.all %}{% if musical_instrument.name == 'Violin' %}selected="selected"{% endif %}{% endfor %}>Violin</option>
+                                <option {% for musical_instrument in file.musical_instruments.all %}{% if musical_instrument.name == 'Ukulele' %}selected="selected"{% endif %}{% endfor %}>Ukulele</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group text-center custom-mt-form-group col-12 mt-4">
+                            <button class="btn btn-primary w-100" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>
+        $(document).ready(function () {
+            $('#audio').height($('#select-audio').height());
+            $('span.custom-file-container__custom-file__custom-file-control').text('{{ file.name }}');
+            $('span.custom-file-container__custom-file__custom-file-control__button').remove();
+
+            $('textarea').prop('disabled', true);
+
+            $("#sidebar-dashboard > a").addClass('active subdrop');
+            $('#sidebar-dashboard ul').append('<li><a href="{% url 'main:edit-file' id=file.id %}"><span>Edit file</span></a></li>')
+            $("#sidebar-dashboard ul li:nth-child(3) a").addClass('active');
+            $("#sidebar-dashboard ul").css('display', 'block');
+            $("#route-page")
+                .append('<li class="breadcrumb-item"><a href="{% url 'main:home' %}"><i class="fas fa-home"></i> Home</a></li>')
+                .append('<li class="breadcrumb-item"><a href="{% url 'main:dashboard' %}">Dashboard</a></li>')
+                .append('<li class="breadcrumb-item"><a href="{% url 'main:edit-file' id=file.id %}"><span>Edit file</span></a></li>');
+        });
+    </script>
+{% endblock %}

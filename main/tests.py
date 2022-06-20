@@ -1,3 +1,10 @@
-from django.test import TestCase
+import os
+import django
 
-# Create your tests here.
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Sound_recognition_of_solo_duet_and_ensemble_instruments.settings")
+django.setup()
+
+from main.models import File
+
+
+File.objects.all().delete()

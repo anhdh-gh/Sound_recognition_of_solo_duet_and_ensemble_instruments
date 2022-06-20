@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,17 +23,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-w(#op-%s)sxkptecvh4*b6&!k0bu4=w7zaz_s-7di6@&r_z45m'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-#
-# ALLOWED_HOSTS = []
+DEBUG = True
 
-DEBUG = False
-ALLOWED_HOSTS = [
-  'localhost',
-  '127.0.0.1',
-  # '111.222.333.444',
-  # 'mywebsite.com'
-]
+ALLOWED_HOSTS = []
+
+# DEBUG = False
+# ALLOWED_HOSTS = [
+#   'localhost',
+#   '127.0.0.1',
+#   # '111.222.333.444',
+#   # 'mywebsite.com'
+# ]
 
 # Application definition
 
@@ -43,7 +43,23 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'main'
 ]
+
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_COOKIE_NAME = "user_session"
+SESSION_COOKIE_HTTPONLY = True
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+CORS_ORIGIN_WHITELIST = [ "http://localhost:8080" ]
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = ["GET","POST"]
+CORS_ALLOW_HEADERS = [ "accept", "accept-encoding", "authorization", "content-type", "dnt", "origin", "user-agent", "x-csrftoken", "x-requested-with" ]
+
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -69,6 +85,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -82,8 +99,12 @@ WSGI_APPLICATION = 'Sound_recognition_of_solo_duet_and_ensemble_instruments.wsgi
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'sound_recognition_of_solo_duet_and_ensemble_instruments',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -131,3 +152,6 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -84,36 +84,6 @@
                             </a>
                         </li>
                     </ul>
-
-                    {% if request.account != null %}
-                        <ul class="nav user-menu float-right">
-                            <li class="nav-item dropdown has-arrow">
-                            <span href="#" class="nav-link user-link" data-toggle="dropdown">
-                                <span class="user-img">
-                                    <img class="rounded-circle"
-                                         src="{% static 'img/user.jpg' %}" width="30"
-                                         alt="Admin">
-                                    <span class="status online"></span>
-                                </span>
-                                <span>{{ request.user.account.username }}</span>
-                            </span>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item"
-                                       href="#"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-                                </div>
-                            </li>
-                        </ul>
-
-                        <div class="dropdown mobile-user-menu float-right">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-                            </div>
-                        </div>
-                    {% endif %}
                 </div>
             </div>
             <!-- Header Section End -->
@@ -148,6 +118,8 @@
     <!-- Page Footer -->
     {% block footer %}{% endblock %}
 
+
+
     <!-- Page Js -->
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
 
@@ -162,9 +134,12 @@
     <script src="{% static 'js/dataTables.bootstrap4.min.js' %}"/>"></script>
     <script src="{% static 'js/jquery.slimscroll.js' %}"/>"></script>
     <script src="{% static 'js/select2.min.js' %}"/>"></script>
+    <script src="{% static 'js/custom-select.js' %}"/>"></script>
     <script src="{% static 'js/moment.min.js' %}"/>"></script>
     <script src="{% static 'js/fileupload.min.js' %}"/>"></script>
+    <script src="{% static 'js/toastr.min.js' %}"/>"></script>
     <script src="{% static 'js/app.js' %}"/>"></script>
+
     {% block js %}{% endblock %}
 </body>
 </html>

@@ -8,15 +8,141 @@
 
 {% block main-content-title %}QUẢN LÝ{% endblock %}
 {% block main-content %}
-    
+    <div class="row">
+        <div class="col-sm-4 col-12">
+        </div>
+        <div class="col-sm-8 col-12 text-right add-btn-col">
+            <a href="{% url 'main:add-file' %}" class="btn btn-primary btn-rounded float-right"><i
+                    class="fas fa-plus"></i> Thêm file</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <div class="page-title">
+                                All file
+                            </div>
+                        </div>
+                        <div class="col-sm-6 text-sm-right">
+                            <div class=" mt-sm-0 mt-2">
+                                <a class="btn btn-outline-primary mr-2" href="{% url 'main:download' %}">
+                                    <img src="{% static 'img/excel.png' %}" alt=""><span class="ml-2">Excel</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+        <table class="table custom-table datatable">
+            <thead class="thead-light">
+                <tr>
+                    <th style="min-width:50px;">File</th>
+                    <th style="min-width:70px;">Nhãn</th>
+                    <th style="min-width:50px;">Nhạc cụ</th>
+                    <th style="min-width:50px;">Thuộc tính</th>
+                    <th class="text-right" style="width:15%;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                    <tr>
+                        <td>
+                            <h2>
+                                <span class="avatar rounded-circle text-white d-flex justify-content-center align-items-center">
+                                    <span onclick="playAudio('{{ file.id }}')" style="font-size: x-large; cursor: pointer" class="text-white">
+                                        <i id="audio-status-{{ file.id }}" class="fas fa-play"></i>
+                                        <audio id="audio-file-{{ file.id }}" class="d-none">
+                                            <source src="{{ file.relative_path }}"/>
+                                        </audio>
+                                    </span>
+                                </span>
+                                <span class="font-weight-bold text-dark">{{ file.name }} <span class="font-weight-bold text-dark">({{ file.id }})</span></span>
+                            </h2>
+                        </td>
+                        <td>{{ file.label }}</td>
+                        <td>
+                            {% if file.musical_instruments.all|length > 1 %}
+                                <div class="dropdown">
+                                    <span role="button"
+                                       class="btn btn-white btn-sm btn-rounded dropdown-toggle"
+                                       data-toggle="dropdown" aria-expanded="false">{{ file.musical_instruments.all.0.name }}</span>
+                                    <div class="dropdown-menu">
+                                        {% for musical_instrument in file.musical_instruments.all %}
+                                            <span style="cursor: pointer" class="dropdown-item">{{ musical_instrument.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                {{ file.musical_instruments.all.0.name }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if file.attributes.all|length > 1 %}
+                                <div class="dropdown">
+                                    <span role="button"
+                                       class="btn btn-white btn-sm btn-rounded dropdown-toggle"
+                                       data-toggle="dropdown" aria-expanded="false">{{ file.attributes.all.0.name }}</span>
+                                    <div class="dropdown-menu">
+                                        {% for attribute in file.attributes.all %}
+                                            <span style="cursor: pointer" class="dropdown-item">{{ attribute.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                {{ file.attributes.all.0.name }}
+                            {% endif %}
+                        </td>
+                        <td class="text-right">
+                            <a href="{% url 'main:edit-file' id=file.id %}" class="btn btn-primary btn-sm mb-1">
+                                <i class="far fa-edit"></i>
+                            </a>
+                            <a href="{% url 'main:delete-file' id=file.id %}" class="btn btn-danger btn-sm mb-1">
+                                <i class="far fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block js %}
     {{ block.super }}
     <script>
-        $("#sidebar-dashboard").addClass('active');
+        $("#sidebar-dashboard > a").addClass('active subdrop');
+        $("#sidebar-dashboard ul li:nth-child(1) a").addClass('active');
+        $("#sidebar-dashboard ul").css('display', 'block');
         $("#route-page")
             .append('<li class="breadcrumb-item"><a href="{% url 'main:home' %}"><i class="fas fa-home"></i> Home</a></li>')
             .append('<li class="breadcrumb-item"><a href="{% url 'main:dashboard' %}"><span>Dashboard</span></a></li>');
+
+        let previous_id = -1;
+        function playAudio(id) {
+            document.getElementById('audio-file-' + id).currentTime = 0
+            $("#audio-status-" + id).attr('class', "fas fa-pause");
+
+            if(previous_id !== -1) {
+                document.getElementById('audio-file-' + previous_id).pause();
+                $("#audio-status-" + previous_id).attr('class', 'fas fa-play');
+            }
+            if(previous_id === id) {
+                document.getElementById('audio-file-' + previous_id).pause();
+                previous_id = -1;
+            }
+            else {
+                previous_id = id;
+                document.getElementById('audio-file-' + id).play();
+            }
+        }
     </script>
 {% endblock %}
