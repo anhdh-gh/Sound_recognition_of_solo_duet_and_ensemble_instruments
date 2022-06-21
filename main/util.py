@@ -9,6 +9,7 @@ import pandas as pd
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from matplotlib import pyplot as plt
+from traitlets import link
 
 from main.constants import SAMPLE_RATE, HOP_LENGTH, FRAME_SIZE
 from main.extract_features import average_energy, zero_crossing_rate, silence_ratio, dft, find_frequencies
@@ -26,11 +27,19 @@ def get_relative_path(real_path):
     return fs.url(real_path)
 
 
-def draw_graph(x_axis, y_axis, x_label="", y_label="", title="", absolute_file_path=get_real_path("")):
+def draw_graph(x_axis, y_axis, x_label="", y_label="", title="", absolute_file_path=get_real_path(""), ratio=1, frequencies = [], magnitude_spectrum = []):
     _, ax = plt.subplots()
 
-    ax.set_title(title)
+    len_max = int(len(x_axis)*ratio)
+    x_axis = x_axis[:len_max]
+    y_axis = y_axis[:len_max]
     ax.plot(x_axis, y_axis)
+
+    if len(frequencies) > 0 and len(magnitude_spectrum) > 0:
+        idx = np.array([np.where(frequencies <= x_axis[len(x_axis) - 1])]).max()
+        plt.plot(frequencies[:idx], magnitude_spectrum[:idx], "x")
+
+    ax.set_title(title)
     ax.grid()
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
@@ -42,8 +51,7 @@ def draw_graph(x_axis, y_axis, x_label="", y_label="", title="", absolute_file_p
 
 def export_to_excel(files):
     # Export file excel
-    fs = FileSystemStorage()
-    path = fs.path("files")
+    path = get_real_folder_path("files")
     writer = pd.ExcelWriter(f'{path}/Features.xlsx', engine='xlsxwriter')
     column_labels = np.array([
         "#",
@@ -75,7 +83,7 @@ def export_to_excel(files):
 
     writer.save()
 
-    return fs.path(f'{path}/Features.xlsx')
+    return get_real_path(f'{path}/Features.xlsx')
 
 
 def save_file(path, file):
@@ -106,19 +114,20 @@ def count_folder(path):
 
 
 def delete_file(file_absolute_path, delete_parent_folder=True):
-    if delete_parent_folder is False:
-        os.remove(file_absolute_path)
-    else:
-        path = Path(file_absolute_path)
+    try:
+        if delete_parent_folder is False:
+            os.remove(file_absolute_path)
+        else:
+            path = Path(file_absolute_path)
 
-        # Xóa thư mục chứa file
-        shutil.rmtree(path.parent.absolute())
-        try:
+            # Xóa thư mục chứa file
+            shutil.rmtree(path.parent.absolute())
+
             # Nếu thư mục cha chứa nó cx rỗng thì xóa nốt
             path = Path(path.parent.absolute())
             os.removedirs(path.parent.absolute())
-        except:
-            traceback.print_exc()
+    except:
+        pass
 
 
 def save_features(file_name, file_absolute_path, file_relative_path, label, nhac_cu, save_folder):
@@ -164,7 +173,7 @@ def save_features(file_name, file_absolute_path, file_relative_path, label, nhac
                     attribute=zero_crossing_rate_attribute,
                     value=zero_crossing_rate(frame)
                 )
-            # tỉ lệ khoảng lặng
+            # Tỉ lệ khoảng lặng
             silence_ratio_attribute = Attribute.objects.create(
                 file=file,
                 name="Tỉ lệ khoảng lặng"
@@ -183,16 +192,15 @@ def save_features(file_name, file_absolute_path, file_relative_path, label, nhac
             # Đặc trưng miền tần số
             # Biến đổi dft
             dft_value = dft(amplitude)
-            frequencies_range = np.linspace(0, SAMPLE_RATE,
-                                            len(dft_value))  # np.linspace(a, b, c): Chia khoảng [a, b] thành c mốc. Mỗi mốc cách nhau (b - a)/(c -1)
+            frequencies_range = np.linspace(0, SAMPLE_RATE, len(dft_value))  # np.linspace(a, b, c): Chia khoảng [a, b] thành c mốc. Mỗi mốc cách nhau (b - a)/(c -1)
 
             # Do tính chất của phép biến đổi DFT với x(n) là số thục, ta có các giá trị X(k) sẽ bằng X(N-k) với k ≠ 0. Điều này có nghĩa là chúng ta chỉ cần nhìn vào một nửa của kết quả DFT và bỏ thông tin trùng lặp ở nửa kia
             half = (len(dft_value) + 1) // 2
-            magnitude_spectrum = np.abs(dft_value)[:half]  # Trị tuyệt đối để lấy ra được độ lớn
+            magnitude_spectrum_range = np.abs(dft_value)[:half]  # Trị tuyệt đối để lấy ra được độ lớn
             frequencies_range = frequencies_range[:half]
 
-            # Giải tần số
-            frequencies = find_frequencies(frequencies_range, magnitude_spectrum)
+            # Các tần số của file
+            frequencies, magnitude_spectrum = find_frequencies(frequencies_range, magnitude_spectrum_range)
 
             # Số lượng tần số
             number_frequencies_attribute = Attribute.objects.create(
@@ -229,7 +237,7 @@ def save_features(file_name, file_absolute_path, file_relative_path, label, nhac
                 file=file,
                 name="Biên độ theo tần số",
                 absolute_path=f"{save_folder}/2.png",
-                relative_path=draw_graph(frequencies_range, magnitude_spectrum, "Tần số (HZ)", "Biên độ", "Biên độ theo tần số", f"{save_folder}/2.png")
+                relative_path=draw_graph(frequencies_range, magnitude_spectrum_range, "Tần số (HZ)", "Biên độ", "Biên độ theo tần số", f"{save_folder}/2.png", 0.3, frequencies, magnitude_spectrum)
             )
             # # Năng lượng trung bình của các frame
             attribute_values = AttributeValue.objects.filter(attribute=average_energy_attribute).all()

@@ -94,8 +94,8 @@ def find_frequencies(frequencies, magnitude_spectrum):
     # Các tần số dưới 20 Hz coi là nhiễu
     new_index = np.array([], dtype=np.int64)
     for i in index:
-        if 20 <= frequencies[i]:
+        if frequencies[i] >= 20:
             new_index = np.append(new_index, i)
     index = new_index
 
-    return frequencies[index]
+    return frequencies[index], magnitude_spectrum[index]

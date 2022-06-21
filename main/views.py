@@ -97,6 +97,8 @@ class DashboardEditFiledHandler(View):
 
                 # Xóa file cũ trong thư mục media
                 delete_file(file.absolute_path)
+                for chart in file.charts.all():
+                    delete_file(chart.absolute_path)
 
                 # Tạo folder lưu file
                 join_nhac_cu = " - ".join([str(x) for x in nhac_cu])  # Guitar - Piano - Violin
