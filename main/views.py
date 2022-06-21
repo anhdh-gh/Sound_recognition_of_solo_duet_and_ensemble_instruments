@@ -15,7 +15,7 @@ from django.views import View
 from Sound_recognition_of_solo_duet_and_ensemble_instruments import settings
 from main.models import File, MusicalInstrument
 from main.util import save_file, count_folder, get_real_path, save_features, export_to_excel, delete_file, \
-    get_relative_path, get_real_folder_path
+    get_relative_path, get_real_folder_path, save_file_input
 
 
 class HomeHandler(View):
@@ -60,18 +60,8 @@ class DashboardAddFiledHandler(View):
         input_file_label = request.POST.get('input-file-label')
         nhac_cu = request.POST.getlist('nhac_cu')
 
-        # Tạo folder lưu file
-        join_nhac_cu = " - ".join([str(x) for x in nhac_cu])  # Guitar - Piano - Violin
-        folder = f'files/{input_file_label}/{join_nhac_cu}'  # files/Hòa tấu/Guitar - Piano - Violin
-        folder_len = count_folder(get_real_path(folder))
-        folder = f'{folder}/{join_nhac_cu} - {folder_len + 1}'
-
-        # Lưu file
-        file_name = f'{input_file_label} - {join_nhac_cu} - {folder_len + 1}.wav'
-        _, uploaded_file_url, uploaded_file_path = save_file(f'{folder}/{file_name}', file_input)
-
-        # Trích rút và lưu trữ đặc trưng trưng database
-        save_features(file_name, uploaded_file_path, uploaded_file_url, input_file_label, nhac_cu, get_real_folder_path(folder))
+        # Trich rút và lưu trữ các đặc trưng của file
+        save_file_input(file_input, input_file_label, nhac_cu)
 
         # Trả về kết quả
         return redirect(reverse('main:dashboard'))
@@ -101,29 +91,29 @@ class DashboardEditFiledHandler(View):
                     delete_file(chart.absolute_path)
 
                 # Tạo folder lưu file
-                join_nhac_cu = " - ".join([str(x) for x in nhac_cu])  # Guitar - Piano - Violin
+                join_nhac_cu = "-".join([str(x) for x in nhac_cu])  # Guitar - Piano - Violin
                 folder = f'files/{file.label}/{join_nhac_cu}'  # files/Hòa tấu/Guitar - Piano - Violin
                 folder_len = count_folder(get_real_path(folder))
-                folder = f'{folder}/{join_nhac_cu} - {folder_len + 1}'
+                folder = f'{folder}/{join_nhac_cu}-{folder_len + 1}'
 
                 # Lưu file
-                file_name = f'{file.label} - {join_nhac_cu} - {folder_len + 1}.wav'
+                file_name = f'{file.label}-{join_nhac_cu}-{folder_len + 1}.wav'
                 shutil.copy(f'{tempt_folder_path}/{file.name}', get_real_folder_path(f'{folder}') + f'/{file_name}')
                 for i, chart in enumerate(file.charts.all()):
-                    shutil.copy(f'{tempt_folder_path}/{i+1}.png', get_real_folder_path(f'{folder}') + f'/{i+1}.png')
+                    shutil.copy(f'{tempt_folder_path}/{i + 1}.png', get_real_folder_path(f'{folder}') + f'/{i + 1}.png')
 
                 ## Xóa file trong thư mục tempt
                 delete_file(f'{tempt_folder_path}/{file.name}', delete_parent_folder=False)
                 for i, chart in enumerate(file.charts.all()):
-                    delete_file(f'{tempt_folder_path}/{i+1}.png', delete_parent_folder=False)
+                    delete_file(f'{tempt_folder_path}/{i + 1}.png', delete_parent_folder=False)
 
                 # Chỉnh sửa lại tên và đường dẫn
                 file.name = file_name
                 file.relative_path = get_relative_path(f'{folder}/{file_name}')
                 file.absolute_path = get_real_path(f'{folder}/{file_name}')
                 for i, chart in enumerate(file.charts.all()):
-                    chart.relative_path = get_relative_path(f'{folder}/{i+1}.png')
-                    chart.absolute_path = get_real_path(f'{folder}/{i+1}.png')
+                    chart.relative_path = get_relative_path(f'{folder}/{i + 1}.png')
+                    chart.absolute_path = get_real_path(f'{folder}/{i + 1}.png')
                     chart.save()
 
                 # Chỉnh sửa lại nhạc cụ
@@ -173,3 +163,36 @@ class DashboardDetailFileHandler(View):
             "so_tan_so": int(file.attributes.get(name="Số lượng tần số").attribute_values.all()[0].value),
             "bang_thong": file.attributes.get(name="Băng thông").attribute_values.all()[0].value
         })
+
+
+class ImportDataHandler(View):
+    def get(self, request):
+        # Xóa các file cũ
+        try:
+            shutil.rmtree(get_real_path('files'))
+        except FileNotFoundError:
+            pass
+
+        # Xóa tất các file trong database
+        File.objects.all().delete()
+
+        # Thực hiện đọc các file rồi trích rút đặc trưng và lưu vào database
+        for dirname, _, filenames in os.walk(get_real_path('data')):
+            input_file_label = 'Đơn tấu' if 'Đơn tấu' in dirname else ('Song tấu' if 'Song tấu' in dirname else 'Hòa tấu')
+            for filename in filenames:
+                print(filename)
+                full_path = os.path.join(dirname, filename)
+                nhac_cu = np.array([])
+                if "Violin" in full_path:
+                    nhac_cu = np.append(nhac_cu, "Violin")
+                if "Ukulele" in full_path:
+                    nhac_cu = np.append(nhac_cu, "Ukulele")
+                if "Piano" in full_path:
+                    nhac_cu = np.append(nhac_cu, "Piano")
+                if "Guitar" in full_path:
+                    nhac_cu = np.append(nhac_cu, "Guitar")
+
+                fs = FileSystemStorage()
+                save_file_input(fs.open(full_path), input_file_label, nhac_cu)
+
+        return redirect(reverse('main:dashboard'))

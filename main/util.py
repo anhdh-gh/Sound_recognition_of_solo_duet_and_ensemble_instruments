@@ -9,7 +9,6 @@ import pandas as pd
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from matplotlib import pyplot as plt
-from traitlets import link
 
 from main.constants import SAMPLE_RATE, HOP_LENGTH, FRAME_SIZE
 from main.extract_features import average_energy, zero_crossing_rate, silence_ratio, dft, find_frequencies
@@ -27,10 +26,27 @@ def get_relative_path(real_path):
     return fs.url(real_path)
 
 
-def draw_graph(x_axis, y_axis, x_label="", y_label="", title="", absolute_file_path=get_real_path(""), ratio=1, frequencies = [], magnitude_spectrum = []):
-    _, ax = plt.subplots()
+def save_file_input(file_input, input_file_label, nhac_cu):
+    # Tạo folder lưu file
+    join_nhac_cu = "-".join([str(x) for x in nhac_cu])  # Guitar - Piano - Violin
+    folder = f'files/{input_file_label}/{join_nhac_cu}'  # files/Hòa tấu/Guitar - Piano - Violin
+    folder_len = count_folder(get_real_path(folder))
+    folder = f'{folder}/{join_nhac_cu}-{folder_len + 1}'
 
-    len_max = int(len(x_axis)*ratio)
+    # Lưu file
+    file_name = f'{input_file_label}-{join_nhac_cu}-{folder_len + 1}.wav'
+    _, uploaded_file_url, uploaded_file_path = save_file(f'{folder}/{file_name}', file_input)
+
+    # Trích rút và lưu trữ đặc trưng trưng database
+    save_features(file_name, uploaded_file_path, uploaded_file_url, input_file_label, nhac_cu,
+                  get_real_folder_path(folder))
+
+
+def draw_graph(x_axis, y_axis, x_label="", y_label="", title="", absolute_file_path=get_real_path(""), ratio=1,
+               frequencies=[], magnitude_spectrum=[]):
+    fig , ax = plt.subplots()
+
+    len_max = int(len(x_axis) * ratio)
     x_axis = x_axis[:len_max]
     y_axis = y_axis[:len_max]
     ax.plot(x_axis, y_axis)
@@ -46,6 +62,8 @@ def draw_graph(x_axis, y_axis, x_label="", y_label="", title="", absolute_file_p
     plt.tight_layout()
 
     plt.savefig(absolute_file_path, bbox_inches='tight')  # bbox_inches='tight': Bỏ các khoảng trắng thừa có trong ảnh
+    plt.cla()
+    plt.close(fig)
     return get_relative_path(absolute_file_path)
 
 
@@ -192,7 +210,8 @@ def save_features(file_name, file_absolute_path, file_relative_path, label, nhac
             # Đặc trưng miền tần số
             # Biến đổi dft
             dft_value = dft(amplitude)
-            frequencies_range = np.linspace(0, SAMPLE_RATE, len(dft_value))  # np.linspace(a, b, c): Chia khoảng [a, b] thành c mốc. Mỗi mốc cách nhau (b - a)/(c -1)
+            frequencies_range = np.linspace(0, SAMPLE_RATE,
+                                            len(dft_value))  # np.linspace(a, b, c): Chia khoảng [a, b] thành c mốc. Mỗi mốc cách nhau (b - a)/(c -1)
 
             # Do tính chất của phép biến đổi DFT với x(n) là số thục, ta có các giá trị X(k) sẽ bằng X(N-k) với k ≠ 0. Điều này có nghĩa là chúng ta chỉ cần nhìn vào một nửa của kết quả DFT và bỏ thông tin trùng lặp ở nửa kia
             half = (len(dft_value) + 1) // 2
@@ -230,16 +249,19 @@ def save_features(file_name, file_absolute_path, file_relative_path, label, nhac
                 file=file,
                 name="Biên độ theo thời gian",
                 absolute_path=f"{save_folder}/1.png",
-                relative_path=draw_graph(time_axis, amplitude, "Thời gian (s)", "Biên độ", "Biên độ theo thời gian", f"{save_folder}/1.png")
+                relative_path=draw_graph(time_axis, amplitude, "Thời gian (s)", "Biên độ", "Biên độ theo thời gian",
+                                         f"{save_folder}/1.png")
             )
             # Biên độ theo tần số
             Chart.objects.create(
                 file=file,
                 name="Biên độ theo tần số",
                 absolute_path=f"{save_folder}/2.png",
-                relative_path=draw_graph(frequencies_range, magnitude_spectrum_range, "Tần số (HZ)", "Biên độ", "Biên độ theo tần số", f"{save_folder}/2.png", 0.3, frequencies, magnitude_spectrum)
+                relative_path=draw_graph(frequencies_range, magnitude_spectrum_range, "Tần số (HZ)", "Biên độ",
+                                         "Biên độ theo tần số", f"{save_folder}/2.png", 0.3, frequencies,
+                                         magnitude_spectrum)
             )
-            # # Năng lượng trung bình của các frame
+            # Năng lượng trung bình của các frame
             attribute_values = AttributeValue.objects.filter(attribute=average_energy_attribute).all()
             Chart.objects.create(
                 file=file,
