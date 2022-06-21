@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% load static %}
+
+{% block title-page %}Dashboard{% endblock %}
+
+{% block main-content-title %}CHI TIẾT FILE{% endblock %}
+{% block main-content %}
+    <div class="row countup-wrapper">
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget dash-widget5">
+                <span class="float-left"><img src="{% static 'img/dash-1.png' %}" alt="" width="80"></span>
+                <div class="dash-widget-info text-right">
+                    <span>Số thuộc tính</span>
+                    <h3 class="counter">+{{ file.attributes.all|length }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget dash-widget5">
+                <div class="dash-widget-info text-left d-inline-block">
+                    <span>Số frame</span>
+                    <h3 class="" id="so_frame">{{ so_frame }}</h3>
+                </div>
+                <span class="float-right"><img src="{% static 'img/dash-2.png' %}" width="80" alt=""></span>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget dash-widget5">
+                <span class="float-left"><img src="{% static 'img/dash-3.png' %}" alt="" width="80"></span>
+                <div class="dash-widget-info text-right">
+                    <span>Số tần số</span>
+                    <h3 class="" id="so_tan_so">{{ so_tan_so }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget dash-widget5">
+                <div class="dash-widget-info d-inline-block text-left">
+                    <span>Băng thông</span>
+                    <h3 class="">{{ bang_thong }}</h3>
+                </div>
+                <span class="float-right"><img src="{% static 'img/dash-4.png' %}" alt="" width="80"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <div class="page-title">
+                                Biểu đồ
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for chart in file.charts.all  %}
+                            <div class="col-sm-6">
+                                <div class="card" style="box-shadow: 0 6px 15px rgb(36 37 38 / 3%);">
+                                    <img src="{{ chart.relative_path }}" class="card-img-top" alt="...">
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>
+        $(document).ready(function () {
+            $("#sidebar-dashboard > a").addClass('active subdrop');
+            $('#sidebar-dashboard ul').append('<li><a href="{% url 'main:edit-file' id=file.id %}"><span>Detail file</span></a></li>')
+            $("#sidebar-dashboard ul li:nth-child(3) a").addClass('active');
+            $("#sidebar-dashboard ul").css('display', 'block');
+            $("#route-page")
+                .append('<li class="breadcrumb-item"><a href="{% url 'main:home' %}"><i class="fas fa-home"></i> Home</a></li>')
+                .append('<li class="breadcrumb-item"><a href="{% url 'main:dashboard' %}">Dashboard</a></li>')
+                .append('<li class="breadcrumb-item"><a href="{% url 'main:detail-file' id=file.id %}"><span>Detail file</span></a></li>');
+        });
+    </script>
+{% endblock %}

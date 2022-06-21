@@ -42,7 +42,12 @@ class DashboardHandler(View):
         files = File.objects.all()
 
         # Hiển thị giao diện
-        return render(request, "dashboard.html", {"files": files})
+        return render(request, "dashboard.html", {
+            "files": files,
+            "don_tau": len(files.filter(label="Đơn tấu")),
+            "song_tau": len(files.filter(label="Song tấu")),
+            "hoa_tau": len(files.filter(label="Hòa tấu")),
+        })
 
 
 class DashboardAddFiledHandler(View):
@@ -66,7 +71,7 @@ class DashboardAddFiledHandler(View):
         _, uploaded_file_url, uploaded_file_path = save_file(f'{folder}/{file_name}', file_input)
 
         # Trích rút và lưu trữ đặc trưng trưng database
-        save_features(file_name, uploaded_file_path, uploaded_file_url, input_file_label, nhac_cu)
+        save_features(file_name, uploaded_file_path, uploaded_file_url, input_file_label, nhac_cu, get_real_folder_path(folder))
 
         # Trả về kết quả
         return redirect(reverse('main:dashboard'))
@@ -84,9 +89,11 @@ class DashboardEditFiledHandler(View):
                 file.label = request.POST.get('input-file-label')
                 nhac_cu = request.POST.getlist('nhac_cu')
 
-                # Copy file cũ sang một thư mục khác
+                # Copy các file cũ sang một thư mục khác
                 tempt_folder_path = get_real_folder_path(f'tempt')
-                shutil.copyfile(file.absolute_path, f'{tempt_folder_path}/{file.name}')
+                shutil.copy(file.absolute_path, f'{tempt_folder_path}/{file.name}')
+                for i, chart in enumerate(file.charts.all()):
+                    shutil.copy(chart.absolute_path, f'{tempt_folder_path}/{i + 1}.png')
 
                 # Xóa file cũ trong thư mục media
                 delete_file(file.absolute_path)
@@ -99,15 +106,23 @@ class DashboardEditFiledHandler(View):
 
                 # Lưu file
                 file_name = f'{file.label} - {join_nhac_cu} - {folder_len + 1}.wav'
-                shutil.copyfile(f'{tempt_folder_path}/{file.name}', get_real_folder_path(f'{folder}') + f'/{file_name}')
+                shutil.copy(f'{tempt_folder_path}/{file.name}', get_real_folder_path(f'{folder}') + f'/{file_name}')
+                for i, chart in enumerate(file.charts.all()):
+                    shutil.copy(f'{tempt_folder_path}/{i+1}.png', get_real_folder_path(f'{folder}') + f'/{i+1}.png')
 
                 ## Xóa file trong thư mục tempt
                 delete_file(f'{tempt_folder_path}/{file.name}', delete_parent_folder=False)
-                file.name = file_name
+                for i, chart in enumerate(file.charts.all()):
+                    delete_file(f'{tempt_folder_path}/{i+1}.png', delete_parent_folder=False)
 
-                # Chỉnh sửa lại đường dẫn
+                # Chỉnh sửa lại tên và đường dẫn
+                file.name = file_name
                 file.relative_path = get_relative_path(f'{folder}/{file_name}')
                 file.absolute_path = get_real_path(f'{folder}/{file_name}')
+                for i, chart in enumerate(file.charts.all()):
+                    chart.relative_path = get_relative_path(f'{folder}/{i+1}.png')
+                    chart.absolute_path = get_real_path(f'{folder}/{i+1}.png')
+                    chart.save()
 
                 # Chỉnh sửa lại nhạc cụ
                 file.musical_instruments.all().delete()
@@ -145,3 +160,14 @@ class DownloadFeaturesExcelHandler(View):
                 response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
                 return response
         raise Http404
+
+
+class DashboardDetailFileHandler(View):
+    def get(self, request, id):
+        file = File.objects.get(pk=id)
+        return render(request, "detail-file.html", {
+            "file": file,
+            "so_frame": int(np.max([len(attribute.attribute_values.all()) for attribute in file.attributes.all()])),
+            "so_tan_so": int(file.attributes.get(name="Số lượng tần số").attribute_values.all()[0].value),
+            "bang_thong": file.attributes.get(name="Băng thông").attribute_values.all()[0].value
+        })

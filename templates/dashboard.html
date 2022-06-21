@@ -8,6 +8,45 @@
 
 {% block main-content-title %}QUẢN LÝ{% endblock %}
 {% block main-content %}
+    <div class="row countup-wrapper">
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget dash-widget5">
+                <span class="float-left"><img src="{% static 'img/dash-1.png' %}" alt="" width="80"></span>
+                <div class="dash-widget-info text-right">
+                    <span>Số lượng file</span>
+                    <h3 class="counter">+{{ files|length }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget dash-widget5">
+                <div class="dash-widget-info text-left d-inline-block">
+                    <span>Đơn tấu</span>
+                    <h3 class="counter">+{{ don_tau }}</h3>
+                </div>
+                <span class="float-right"><img src="{% static 'img/dash-2.png' %}" width="80" alt=""></span>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget dash-widget5">
+                <span class="float-left"><img src="{% static 'img/dash-3.png' %}" alt="" width="80"></span>
+                <div class="dash-widget-info text-right">
+                    <span>Song tấu</span>
+                    <h3 class="counter">+{{ song_tau }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget dash-widget5">
+                <div class="dash-widget-info d-inline-block text-left">
+                    <span>Hòa tấu</span>
+                    <h3 class="counter">+{{ hoa_tau }}</h3>
+                </div>
+                <span class="float-right"><img src="{% static 'img/dash-4.png' %}" alt="" width="80"></span>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-sm-4 col-12">
         </div>
@@ -38,78 +77,90 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-        <table class="table custom-table datatable">
-            <thead class="thead-light">
-                <tr>
-                    <th style="min-width:50px;">File</th>
-                    <th style="min-width:70px;">Nhãn</th>
-                    <th style="min-width:50px;">Nhạc cụ</th>
-                    <th style="min-width:50px;">Thuộc tính</th>
-                    <th class="text-right" style="width:15%;">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for file in files %}
-                    <tr>
-                        <td>
-                            <h2>
+                        <table class="table custom-table datatable">
+                            <thead class="thead-light">
+                            <tr>
+                                <th style="min-width:50px;">File</th>
+                                <th style="min-width:70px;">Nhãn</th>
+                                <th style="min-width:50px;">Nhạc cụ</th>
+                                <th style="min-width:50px;">Thuộc tính</th>
+                                <th class="text-right" style="width:15%;">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for file in files %}
+                                <tr>
+                                    <td>
+                                        <h2>
                                 <span class="avatar rounded-circle text-white d-flex justify-content-center align-items-center">
-                                    <span onclick="playAudio('{{ file.id }}')" style="font-size: x-large; cursor: pointer" class="text-white">
+                                    <span onclick="playAudio('{{ file.id }}')"
+                                          style="font-size: x-large; cursor: pointer" class="text-white">
                                         <i id="audio-status-{{ file.id }}" class="fas fa-play"></i>
                                         <audio id="audio-file-{{ file.id }}" class="d-none">
                                             <source src="{{ file.relative_path }}"/>
                                         </audio>
                                     </span>
                                 </span>
-                                <span class="font-weight-bold text-dark">{{ file.name }} <span class="font-weight-bold text-dark">({{ file.id }})</span></span>
-                            </h2>
-                        </td>
-                        <td>{{ file.label }}</td>
-                        <td>
-                            {% if file.musical_instruments.all|length > 1 %}
-                                <div class="dropdown">
+                                            <span class="font-weight-bold text-dark">{{ file.name }} <span
+                                                    class="font-weight-bold text-dark">({{ file.id }})</span></span>
+                                        </h2>
+                                    </td>
+                                    <td>{{ file.label }}</td>
+                                    <td>
+                                        {% if file.musical_instruments.all|length > 1 %}
+                                            <div class="dropdown">
                                     <span role="button"
-                                       class="btn btn-white btn-sm btn-rounded dropdown-toggle"
-                                       data-toggle="dropdown" aria-expanded="false">{{ file.musical_instruments.all.0.name }}</span>
-                                    <div class="dropdown-menu">
-                                        {% for musical_instrument in file.musical_instruments.all %}
-                                            <span style="cursor: pointer" class="dropdown-item">{{ musical_instrument.name }}</span>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            {% else %}
-                                {{ file.musical_instruments.all.0.name }}
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if file.attributes.all|length > 1 %}
-                                <div class="dropdown">
+                                          class="btn btn-white btn-sm btn-rounded dropdown-toggle"
+                                          data-toggle="dropdown"
+                                          aria-expanded="false">{{ file.musical_instruments.all.0.name }}</span>
+                                                <div class="dropdown-menu">
+                                                    {% for musical_instrument in file.musical_instruments.all %}
+                                                        <span style="cursor: pointer"
+                                                              class="dropdown-item">{{ musical_instrument.name }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            {{ file.musical_instruments.all.0.name }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if file.attributes.all|length > 1 %}
+                                            <div class="dropdown">
                                     <span role="button"
-                                       class="btn btn-white btn-sm btn-rounded dropdown-toggle"
-                                       data-toggle="dropdown" aria-expanded="false">{{ file.attributes.all.0.name }}</span>
-                                    <div class="dropdown-menu">
-                                        {% for attribute in file.attributes.all %}
-                                            <span style="cursor: pointer" class="dropdown-item">{{ attribute.name }}</span>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            {% else %}
-                                {{ file.attributes.all.0.name }}
-                            {% endif %}
-                        </td>
-                        <td class="text-right">
-                            <a href="{% url 'main:edit-file' id=file.id %}" class="btn btn-primary btn-sm mb-1">
-                                <i class="far fa-edit"></i>
-                            </a>
-                            <a href="{% url 'main:delete-file' id=file.id %}" class="btn btn-danger btn-sm mb-1">
-                                <i class="far fa-trash-alt"></i>
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                                          class="btn btn-white btn-sm btn-rounded dropdown-toggle"
+                                          data-toggle="dropdown"
+                                          aria-expanded="false">{{ file.attributes.all.0.name }}</span>
+                                                <div class="dropdown-menu">
+                                                    {% for attribute in file.attributes.all %}
+                                                        <span style="cursor: pointer"
+                                                              class="dropdown-item">{{ attribute.name }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            {{ file.attributes.all.0.name }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-right">
+                                        <a href="{% url 'main:detail-file' id=file.id %}"
+                                           class="btn btn-info btn-sm mb-1">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                        <a href="{% url 'main:edit-file' id=file.id %}"
+                                           class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'main:delete-file' id=file.id %}"
+                                           class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

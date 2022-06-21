@@ -83,13 +83,7 @@ def dft(amplitude):
 
 
 # Lấy ra số lượng tần số
-def find_frequencies(dft_value):
-    frequencies = np.linspace(0, SAMPLE_RATE,
-                              len(dft_value))  # np.linspace(a, b, c): Chia khoảng [a, b] thành c mốc. Mỗi mốc cách nhau (b - a)/(c -1)
-    half = (len(dft_value) + 1) // 2
-    magnitude_spectrum = np.abs(dft_value)[:half]  # Trị tuyệt đối để lấy ra được độ lớn
-    frequencies = frequencies[:half]
-
+def find_frequencies(frequencies, magnitude_spectrum):
     # Đỉnh phải có độ lớn tối thiểu là height và các đỉnh lân cận phải cách nhau ít nhất distance
     index, _ = find_peaks(
         magnitude_spectrum,
