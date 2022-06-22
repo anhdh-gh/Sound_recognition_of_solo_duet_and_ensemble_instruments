@@ -337,16 +337,23 @@
                 document.getElementById('audio-file-' + id).currentTime = 0
                 $("#audio-status-" + id).attr('class', "fas fa-pause");
 
-                if (previous_id !== -1) {
+                if(previous_id !== -1) {
                     document.getElementById('audio-file-' + previous_id).pause();
                     $("#audio-status-" + previous_id).attr('class', 'fas fa-play');
                 }
-                if (previous_id === id) {
+                if(previous_id === id) {
                     document.getElementById('audio-file-' + previous_id).pause();
                     previous_id = -1;
-                } else {
+                }
+                else {
                     previous_id = id;
                     document.getElementById('audio-file-' + id).play();
+
+                    document.getElementById("audio-file-" + id).addEventListener('ended', function () {
+                        document.getElementById('audio-file-' + id).currentTime = 0
+                        $("#audio-status-" + id).attr('class', "fas fa-play");
+                        previous_id = -1;
+                    });
                 }
             }
         {% endif %}

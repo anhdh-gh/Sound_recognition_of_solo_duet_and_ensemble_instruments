@@ -197,6 +197,12 @@
             else {
                 previous_id = id;
                 document.getElementById('audio-file-' + id).play();
+
+                document.getElementById("audio-file-" + id).addEventListener('ended', function () {
+                    document.getElementById('audio-file-' + id).currentTime = 0
+                    $("#audio-status-" + id).attr('class', "fas fa-play");
+                    previous_id = -1;
+                });
             }
         }
     </script>
