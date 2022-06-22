@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load humanize %}
+{% load mathfilters %}
 
 {% block title %}Dashboard{% endblock %}
 
@@ -40,7 +42,7 @@
             <div class="dash-widget dash-widget5">
                 <div class="dash-widget-info d-inline-block text-left">
                     <span>Băng thông</span>
-                    <h3 class="">{{ bang_thong }}</h3>
+                    <h3 class="">{{ bang_thong|floatformat:2|intcomma }}</h3>
                 </div>
                 <span class="float-right"><img src="{% static 'img/dash-4.png' %}" alt="" width="80"></span>
             </div>

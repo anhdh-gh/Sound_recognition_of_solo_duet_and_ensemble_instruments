@@ -6,4 +6,4 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Sound_recognition_of_solo_duet_
 django.setup()
 
 from main.models import File
-File.objects.filter(label="Song tấu").delete()
+File.objects.all().delete()
