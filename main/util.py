@@ -1,3 +1,5 @@
+import math
+import operator
 import os
 import shutil
 import traceback
@@ -25,6 +27,50 @@ def get_real_path(relative_path):
 def get_relative_path(real_path):
     fs = FileSystemStorage()
     return fs.url(real_path)
+
+
+def get_values_of_attribute(file, attribute_name):
+    values = np.array([])
+
+    attribute = file.attributes.get(name=attribute_name)
+    for attribute_value in attribute.attribute_values.all():
+        values = np.append(values, attribute_value.value)
+
+    return values
+
+
+def get_vector_feature(file):
+    vector_feature = np.array([])
+    vector_feature = np.append(vector_feature, get_values_of_attribute(file, "Năng lượng trung bình"))
+    vector_feature = np.append(vector_feature, get_values_of_attribute(file, "Tốc độ đổi dấu"))
+    vector_feature = np.append(vector_feature, get_values_of_attribute(file, "Tỉ lệ khoảng lặng"))
+    vector_feature = np.append(vector_feature, get_values_of_attribute(file, "Số lượng tần số"))
+    vector_feature = np.append(vector_feature, get_values_of_attribute(file, "Băng thông"))
+    return vector_feature
+
+
+# Tính khoảng cách giữa hai vector (theo Euclid)
+def calculate_Euclid_distance(vector1, vector2):
+    n = len(vector1)
+    result = 0
+    for i in range(0, n, 1):
+        result = result + (vector1[i] - vector2[i]) ** 2
+    return math.sqrt(result)
+
+
+def calculate(vector_feature_input):
+    files = File.objects.all()
+    file_result = files[0]
+    min_value = -1
+    for file in files:
+        vector_feature = get_vector_feature(file)
+        file.distance = calculate_Euclid_distance(vector_feature_input, vector_feature)
+        if min_value == -1:
+            min_value = file.distance
+        elif min_value > file.distance:
+            min_value = file.distance
+            file_result = file
+    return files, file_result
 
 
 def extract_vector_features(path, save_folder):
@@ -94,9 +140,10 @@ def extract_vector_features(path, save_folder):
         draw_graph(time_axis, amplitude, "Thời gian (s)", "Biên độ", "Biên độ theo thời gian", f"{save_folder}/1.png")
     )
     # Biên độ theo tần số
-    path_graphs = np.append(path_graphs, draw_graph(frequencies_range, magnitude_spectrum_range, "Tần số (HZ)", "Biên độ",
-                                "Biên độ theo tần số", f"{save_folder}/2.png", 0.3, frequencies,
-                                magnitude_spectrum))
+    path_graphs = np.append(path_graphs,
+                            draw_graph(frequencies_range, magnitude_spectrum_range, "Tần số (HZ)", "Biên độ",
+                                       "Biên độ theo tần số", f"{save_folder}/2.png", 0.3, frequencies,
+                                       magnitude_spectrum))
     # Năng lượng trung bình của các frame
     path_graphs = np.append(path_graphs, draw_graph(
         np.arange(0, len(average_energys), 1),
