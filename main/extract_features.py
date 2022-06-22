@@ -84,7 +84,7 @@ def dft(amplitude):
 
 # Lấy ra số lượng tần số
 def find_frequencies(frequencies, magnitude_spectrum):
-    # Đỉnh phải có độ lớn tối thiểu là height và các đỉnh lân cận phải cách nhau ít nhất distance
+    # Đỉnh phải có độ lớn tối thiểu là height
     index, _ = find_peaks(
         magnitude_spectrum,
         height=np.max(magnitude_spectrum) * 0.03,

@@ -100,7 +100,7 @@ def extract_vector_features(path, save_folder):
     silence_ratios = np.array([])
     # Ngưỡng biên độ = 5% x biên độ lớn nhất
     amplitude_threshold = 0.05 * np.max(np.abs(amplitude))
-    # Ngưỡng thời gian = 0.1% x thời gian của file âm thanh
+    # Ngưỡng thời gian = 0.1% x thời gian của file âm thanh <=> 441 Frame liên tiêp nhau
     time_threshold = 0.001 * len(amplitude)
     for i in range(0, len(amplitude), HOP_LENGTH):
         frame = amplitude[i: i + FRAME_SIZE]
