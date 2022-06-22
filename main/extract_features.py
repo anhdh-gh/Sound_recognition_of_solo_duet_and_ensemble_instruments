@@ -88,7 +88,7 @@ def find_frequencies(frequencies, magnitude_spectrum):
     index, _ = find_peaks(
         magnitude_spectrum,
         height=np.max(magnitude_spectrum) * 0.03,
-        distance=50
+        distance=1
     )
 
     # Các tần số dưới 20 Hz coi là nhiễu
