@@ -15,7 +15,7 @@ from django.views import View
 from Sound_recognition_of_solo_duet_and_ensemble_instruments import settings
 from main.models import File, MusicalInstrument
 from main.util import save_file, count_folder, get_real_path, save_features, export_to_excel, delete_file, \
-    get_relative_path, get_real_folder_path, save_file_input
+    get_relative_path, get_real_folder_path, save_file_input, extract_vector_features
 
 
 class HomeHandler(View):
@@ -25,15 +25,21 @@ class HomeHandler(View):
     def post(self, request):
         # Lấy file gửi lên và lưu file
         file_input = request.FILES['file-input']
-        _, uploaded_file_url, _ = save_file(f'file-input/{file_input.name}', file_input)
+        _, uploaded_file_url, uploaded_file_path = save_file(f'file-input/{file_input.name}', file_input)
 
-        # Xử lý
+        # Trích rút các đặc trưng
+        features, so_frame, so_tan_so, bang_thong, path_graphs = extract_vector_features(uploaded_file_path, get_real_folder_path(f'file-input'))
 
         # Trả về kết quả
         return render(request, "home.html", {
             'uploaded_file_url': uploaded_file_url,
             'result': True,
-            'file_name': file_input.name
+            'features': features,
+            'file_name': file_input.name,
+            "so_frame": so_frame,
+            "so_tan_so": so_tan_so,
+            "bang_thong": bang_thong,
+            "path_graphs": path_graphs
         })
 
 

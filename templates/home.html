@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load humanize %}
+{% load mathfilters %}
 
 {% block title %}Home{% endblock %}
 
@@ -16,7 +18,9 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="payslip-title text-decoration-none mb-0" style="text-transform: none">Nhận dạng âm thanh nhạc cụ đơn tấu, song tấu, hòa tấu</h4>
+                    <div class="page-title">
+                        Nhận dạng âm thanh nhạc cụ đơn tấu, song tấu, hòa tấu
+                    </div>
                 </div>
                 <div class="card-body">
                     {% if result == False %}
@@ -130,374 +134,459 @@
         </div>
     </div>
 
-    <div class="row collapse" id="resuleCompare">
-        <div class="col-md-12">
+    {% if result == True %}
+        <div class="row collapse" id="resuleCompare">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="payslip-title text-decoration-none mb-0" style="text-transform: none">Kết quả so sánh</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table custom-table datatable">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th style="min-width:50px;">Name (Subject)</th>
+                                    <th style="min-width:70px;">Teacher ID</th>
+                                    <th style="min-width:50px;">Gender</th>
+                                    <th style="min-width:50px;">Address</th>
+                                    <th style="min-width:80px;">Date of Birth</th>
+                                    <th style="min-width:50px;">Email</th>
+                                    <th style="min-width:50px;">Mobile</th>
+                                    <th class="text-right" style="width:15%;">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <h2>
+                                            <a href="profile.html" class="avatar text-white">R</a>
+                                            <a href="profile.html">Ruth C. Gault <span>(Maths)</span></a>
+                                        </h2>
+                                    </td>
+                                    <td>TE-0d001</td>
+                                    <td>Male</td>
+                                    <td>520 Cambridge Place,USA</td>
+                                    <td>1 Jun 1985</td>
+                                    <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
+                                           class="__cf_email__"
+                                           data-cfemail="6012151408030701150c14200518010d100c054e030f0d">[email&#160;protected]</a>
+                                    </td>
+                                    <td>410-610-2754</td>
+                                    <td class="text-right">
+                                        <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <button type="submit" data-toggle="modal" data-target="#delete_employee"
+                                                class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="profile.html" class="avatar">M</a>
+                                        <h2><a href="profile.html">Michael <span>(Maths)</span></a></h2>
+                                    </td>
+                                    <td>TE-0d021</td>
+                                    <td>Male</td>
+                                    <td>4850 Edgewood Road,USA</td>
+                                    <td>1 Jan 1986</td>
+                                    <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
+                                           class="__cf_email__"
+                                           data-cfemail="325f5b515a53575e445047464653404172574a535f425e571c515d5f">[email&#160;protected]</a>
+                                    </td>
+                                    <td>870-983-5423</td>
+                                    <td class="text-right">
+                                        <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <button type="submit" data-toggle="modal" data-target="#delete_employee"
+                                                class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="profile.html" class="avatar">M</a>
+                                        <h2><a href="profile.html">Martin<span>(Maths)</span></a></h2>
+                                    </td>
+                                    <td>TE-0d022</td>
+                                    <td>Male</td>
+                                    <td>1018 Marshville Road,USA</td>
+                                    <td>5 apri 1983</td>
+                                    <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
+                                           class="__cf_email__"
+                                           data-cfemail="167b7764627f7875757e77667b777856736e777b667a733875797b">[email&#160;protected]</a>
+                                    </td>
+                                    <td>845-594-9679</td>
+                                    <td class="text-right">
+                                        <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <button type="submit" data-toggle="modal" data-target="#delete_employee"
+                                                class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="profile.html" class="avatar">K</a>
+                                        <h2><a href="profile.html">Kenneth <span>(Maths)</span></a></h2>
+                                    </td>
+                                    <td>TE-0d023</td>
+                                    <td>Male</td>
+                                    <td>11 Johnstown Road,USA</td>
+                                    <td>10 Jan 1987</td>
+                                    <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
+                                           class="__cf_email__"
+                                           data-cfemail="3f545a51515a4b574d585e4d515a4d7f5a475e524f535a115c5052">[email&#160;protected]</a>
+                                    </td>
+                                    <td>847-383-8653</td>
+                                    <td class="text-right">
+                                        <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <button type="submit" data-toggle="modal" data-target="#delete_employee"
+                                                class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="profile.html" class="avatar">R</a>
+                                        <h2><a href="profile.html">Ronald <span>(Maths)</span></a></h2>
+                                    </td>
+                                    <td>TE-0d024</td>
+                                    <td>Male</td>
+                                    <td>2306 Bernardo street,USA</td>
+                                    <td>11 Jan 1982</td>
+                                    <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
+                                           class="__cf_email__"
+                                           data-cfemail="d3a1bcbdb2bfb7a1bfb6b1bca493b6abb2bea3bfb6fdb0bcbe">[email&#160;protected]</a>
+                                    </td>
+                                    <td>813-240-7315</td>
+                                    <td class="text-right">
+                                        <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <button type="submit" data-toggle="modal" data-target="#delete_employee"
+                                                class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="profile.html" class="avatar">B</a>
+                                        <h2><a href="profile.html">Brenda <span>(Maths)</span></a></h2>
+                                    </td>
+                                    <td>TE-0d025</td>
+                                    <td>Male</td>
+                                    <td>80 Poplar Chase Lane,USA</td>
+                                    <td>21 Jun 1988</td>
+                                    <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
+                                           class="__cf_email__"
+                                           data-cfemail="6d0f1f0803090c0c0c1f030201092d08150c001d0108430e0200">[email&#160;protected]</a>
+                                    </td>
+                                    <td>208-381-8106</td>
+                                    <td class="text-right">
+                                        <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <button type="submit" data-toggle="modal" data-target="#delete_employee"
+                                                class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="profile.html" class="avatar">D</a>
+                                        <h2><a href="profile.html">Daniel <span>(Maths)</span></a></h2>
+                                    </td>
+                                    <td>TE-0d026</td>
+                                    <td>Male</td>
+                                    <td>4824 Kimberly Way,USA</td>
+                                    <td>1 Jan 1985</td>
+                                    <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
+                                           class="__cf_email__"
+                                           data-cfemail="197d7877707c756b697c787b767d60597c61787469757c377a7674">[email&#160;protected]</a>
+                                    </td>
+                                    <td>616-843-8603</td>
+                                    <td class="text-right">
+                                        <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <button type="submit" data-toggle="modal" data-target="#delete_employee"
+                                                class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="profile.html" class="avatar">D</a>
+                                        <h2><a href="profile.html">Dennis <span>(Maths)</span></a></h2>
+                                    </td>
+                                    <td>TE-0d027</td>
+                                    <td>Male</td>
+                                    <td>1441 Argonne street,USA</td>
+                                    <td>22 Jan 1983</td>
+                                    <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
+                                           class="__cf_email__"
+                                           data-cfemail="d2b6b7bcbcbba1a6b1b3b0a0b7a0b392b7aab3bfa2beb7fcb1bdbf">[email&#160;protected]</a>
+                                    </td>
+                                    <td>302-258-6160</td>
+                                    <td class="text-right">
+                                        <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <button type="submit" data-toggle="modal" data-target="#delete_employee"
+                                                class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="profile.html" class="avatar">H</a>
+                                        <h2><a href="profile.html">Heriberto <span>(Maths)</span></a></h2>
+                                    </td>
+                                    <td>TE-0d028</td>
+                                    <td>Male</td>
+                                    <td>3343 Shinn Avenue,USA</td>
+                                    <td>1 July 1982</td>
+                                    <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
+                                           class="__cf_email__"
+                                           data-cfemail="5a323f2833383f282e353734333f382f32281a3f223b372a363f74393537">[email&#160;protected]</a>
+                                    </td>
+                                    <td>724-552-9237</td>
+                                    <td class="text-right">
+                                        <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <button type="submit" data-toggle="modal" data-target="#delete_employee"
+                                                class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="profile.html" class="avatar">J</a>
+                                        <h2><a href="profile.html">Jean <span>(Maths)</span></a></h2>
+                                    </td>
+                                    <td>TE-0d029</td>
+                                    <td>Male</td>
+                                    <td>2297 Aspen Courtc ,USA</td>
+                                    <td>1 feb 1985</td>
+                                    <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
+                                           class="__cf_email__"
+                                           data-cfemail="c7ada2a6a9adafa2a9a3a2b5b4a8a987a2bfa6aab7aba2e9a4a8aa">[email&#160;protected]</a>
+                                    </td>
+                                    <td>617-330-4593</td>
+                                    <td class="text-right">
+                                        <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <button type="submit" data-toggle="modal" data-target="#delete_employee"
+                                                class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="profile.html" class="avatar">D</a>
+                                        <h2><a href="profile.html">Daniel <span>(Maths)</span></a></h2>
+                                    </td>
+                                    <td>TE-0d026</td>
+                                    <td>Male</td>
+                                    <td>4824 Kimberly Way,USA</td>
+                                    <td>1 Jan 1985</td>
+                                    <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
+                                           class="__cf_email__"
+                                           data-cfemail="bcd8ddd2d5d9d0ceccd9ddded3d8c5fcd9c4ddd1ccd0d992dfd3d1">[email&#160;protected]</a>
+                                    </td>
+                                    <td>616-843-8603</td>
+                                    <td class="text-right">
+                                        <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <button type="submit" data-toggle="modal" data-target="#delete_employee"
+                                                class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="profile.html" class="avatar">D</a>
+                                        <h2><a href="profile.html">Dennis <span>(Maths)</span></a></h2>
+                                    </td>
+                                    <td>TE-0d027</td>
+                                    <td>Male</td>
+                                    <td>1441 Argonne street,USA</td>
+                                    <td>1 Jan 1985</td>
+                                    <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
+                                           class="__cf_email__"
+                                           data-cfemail="1377767d7d7a60677072716176617253766b727e637f763d707c7e">[email&#160;protected]</a>
+                                    </td>
+                                    <td>302-258-6160</td>
+                                    <td class="text-right">
+                                        <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <button type="submit" data-toggle="modal" data-target="#delete_employee"
+                                                class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="profile.html" class="avatar">H</a>
+                                        <h2><a href="profile.html">Heriberto<span>(Maths)</span></a></h2>
+                                    </td>
+                                    <td>TE-0d028</td>
+                                    <td>Male</td>
+                                    <td>3343 Shinn Avenue,USA</td>
+                                    <td>1 Jan 1985</td>
+                                    <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
+                                           class="__cf_email__"
+                                           data-cfemail="9af2ffe8f3f8ffe8eef5f7f4f3fff8eff2e8daffe2fbf7eaf6ffb4f9f5f7">[email&#160;protected]</a>
+                                    </td>
+                                    <td>724-552-9237</td>
+                                    <td class="text-right">
+                                        <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <button type="submit" data-toggle="modal" data-target="#delete_employee"
+                                                class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="profile.html" class="avatar">J</a>
+                                        <h2><a href="profile.html">Jean<span>(Maths)</span></a></h2>
+                                    </td>
+                                    <td>TE-0d029</td>
+                                    <td>Male</td>
+                                    <td>2297 Aspen Courtc ,USA</td>
+                                    <td>1 Jan 1985</td>
+                                    <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
+                                           class="__cf_email__"
+                                           data-cfemail="6a000f0b0400020f040e0f181905042a0f120b071a060f44090507">[email&#160;protected]</a>
+                                    </td>
+                                    <td>617-330-4593</td>
+                                    <td class="text-right">
+                                        <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        <button type="submit" data-toggle="modal" data-target="#delete_employee"
+                                                class="btn btn-danger btn-sm mb-1">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="page-title">
+                            Chi tiết file
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row countup-wrapper">
+                            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                                <div class="dash-widget dash-widget5">
+                                    <span class="float-left"><img src="{% static 'img/dash-1.png' %}" alt="" width="80"></span>
+                                    <div class="dash-widget-info text-right">
+                                        <span>Độ dài vector</span>
+                                        <h3 class="counter">+{{ features|length }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                                <div class="dash-widget dash-widget5">
+                                    <div class="dash-widget-info text-left d-inline-block">
+                                        <span>Số frame</span>
+                                        <h3 class="" id="so_frame">{{ so_frame }}</h3>
+                                    </div>
+                                    <span class="float-right"><img src="{% static 'img/dash-2.png' %}" width="80"
+                                                                   alt=""></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                                <div class="dash-widget dash-widget5">
+                                    <span class="float-left"><img src="{% static 'img/dash-3.png' %}" alt="" width="80"></span>
+                                    <div class="dash-widget-info text-right">
+                                        <span>Số tần số</span>
+                                        <h3 class="" id="so_tan_so">{{ so_tan_so }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                                <div class="dash-widget dash-widget5">
+                                    <div class="dash-widget-info d-inline-block text-left">
+                                        <span>Băng thông</span>
+                                        <h3 class="">{{ bang_thong|floatformat:2|intcomma }}</h3>
+                                    </div>
+                                    <span class="float-right"><img src="{% static 'img/dash-4.png' %}" alt=""
+                                                                   width="80"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+        <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="payslip-title text-decoration-none mb-0" style="text-transform: none">Kết quả so sánh</h4>
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <div class="page-title">
+                                Biểu đồ
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table custom-table datatable">
-                            <thead class="thead-light">
-                            <tr>
-                                <th style="min-width:50px;">Name (Subject)</th>
-                                <th style="min-width:70px;">Teacher ID</th>
-                                <th style="min-width:50px;">Gender</th>
-                                <th style="min-width:50px;">Address</th>
-                                <th style="min-width:80px;">Date of Birth</th>
-                                <th style="min-width:50px;">Email</th>
-                                <th style="min-width:50px;">Mobile</th>
-                                <th class="text-right" style="width:15%;">Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>
-                                    <h2>
-                                        <a href="profile.html" class="avatar text-white">R</a>
-                                        <a href="profile.html">Ruth C. Gault <span>(Maths)</span></a>
-                                    </h2>
-                                </td>
-                                <td>TE-0d001</td>
-                                <td>Male</td>
-                                <td>520 Cambridge Place,USA</td>
-                                <td>1 Jun 1985</td>
-                                <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="6012151408030701150c14200518010d100c054e030f0d">[email&#160;protected]</a>
-                                </td>
-                                <td>410-610-2754</td>
-                                <td class="text-right">
-                                    <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
-                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <button type="submit" data-toggle="modal" data-target="#delete_employee"
-                                            class="btn btn-danger btn-sm mb-1">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="profile.html" class="avatar">M</a>
-                                    <h2><a href="profile.html">Michael <span>(Maths)</span></a></h2>
-                                </td>
-                                <td>TE-0d021</td>
-                                <td>Male</td>
-                                <td>4850 Edgewood Road,USA</td>
-                                <td>1 Jan 1986</td>
-                                <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="325f5b515a53575e445047464653404172574a535f425e571c515d5f">[email&#160;protected]</a>
-                                </td>
-                                <td>870-983-5423</td>
-                                <td class="text-right">
-                                    <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
-                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <button type="submit" data-toggle="modal" data-target="#delete_employee"
-                                            class="btn btn-danger btn-sm mb-1">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="profile.html" class="avatar">M</a>
-                                    <h2><a href="profile.html">Martin<span>(Maths)</span></a></h2>
-                                </td>
-                                <td>TE-0d022</td>
-                                <td>Male</td>
-                                <td>1018 Marshville Road,USA</td>
-                                <td>5 apri 1983</td>
-                                <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="167b7764627f7875757e77667b777856736e777b667a733875797b">[email&#160;protected]</a>
-                                </td>
-                                <td>845-594-9679</td>
-                                <td class="text-right">
-                                    <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
-                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <button type="submit" data-toggle="modal" data-target="#delete_employee"
-                                            class="btn btn-danger btn-sm mb-1">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="profile.html" class="avatar">K</a>
-                                    <h2><a href="profile.html">Kenneth <span>(Maths)</span></a></h2>
-                                </td>
-                                <td>TE-0d023</td>
-                                <td>Male</td>
-                                <td>11 Johnstown Road,USA</td>
-                                <td>10 Jan 1987</td>
-                                <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="3f545a51515a4b574d585e4d515a4d7f5a475e524f535a115c5052">[email&#160;protected]</a>
-                                </td>
-                                <td>847-383-8653</td>
-                                <td class="text-right">
-                                    <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
-                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <button type="submit" data-toggle="modal" data-target="#delete_employee"
-                                            class="btn btn-danger btn-sm mb-1">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="profile.html" class="avatar">R</a>
-                                    <h2><a href="profile.html">Ronald <span>(Maths)</span></a></h2>
-                                </td>
-                                <td>TE-0d024</td>
-                                <td>Male</td>
-                                <td>2306 Bernardo street,USA</td>
-                                <td>11 Jan 1982</td>
-                                <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="d3a1bcbdb2bfb7a1bfb6b1bca493b6abb2bea3bfb6fdb0bcbe">[email&#160;protected]</a>
-                                </td>
-                                <td>813-240-7315</td>
-                                <td class="text-right">
-                                    <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
-                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <button type="submit" data-toggle="modal" data-target="#delete_employee"
-                                            class="btn btn-danger btn-sm mb-1">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="profile.html" class="avatar">B</a>
-                                    <h2><a href="profile.html">Brenda <span>(Maths)</span></a></h2>
-                                </td>
-                                <td>TE-0d025</td>
-                                <td>Male</td>
-                                <td>80 Poplar Chase Lane,USA</td>
-                                <td>21 Jun 1988</td>
-                                <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="6d0f1f0803090c0c0c1f030201092d08150c001d0108430e0200">[email&#160;protected]</a>
-                                </td>
-                                <td>208-381-8106</td>
-                                <td class="text-right">
-                                    <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
-                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <button type="submit" data-toggle="modal" data-target="#delete_employee"
-                                            class="btn btn-danger btn-sm mb-1">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="profile.html" class="avatar">D</a>
-                                    <h2><a href="profile.html">Daniel <span>(Maths)</span></a></h2>
-                                </td>
-                                <td>TE-0d026</td>
-                                <td>Male</td>
-                                <td>4824 Kimberly Way,USA</td>
-                                <td>1 Jan 1985</td>
-                                <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="197d7877707c756b697c787b767d60597c61787469757c377a7674">[email&#160;protected]</a>
-                                </td>
-                                <td>616-843-8603</td>
-                                <td class="text-right">
-                                    <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
-                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <button type="submit" data-toggle="modal" data-target="#delete_employee"
-                                            class="btn btn-danger btn-sm mb-1">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="profile.html" class="avatar">D</a>
-                                    <h2><a href="profile.html">Dennis <span>(Maths)</span></a></h2>
-                                </td>
-                                <td>TE-0d027</td>
-                                <td>Male</td>
-                                <td>1441 Argonne street,USA</td>
-                                <td>22 Jan 1983</td>
-                                <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="d2b6b7bcbcbba1a6b1b3b0a0b7a0b392b7aab3bfa2beb7fcb1bdbf">[email&#160;protected]</a>
-                                </td>
-                                <td>302-258-6160</td>
-                                <td class="text-right">
-                                    <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
-                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <button type="submit" data-toggle="modal" data-target="#delete_employee"
-                                            class="btn btn-danger btn-sm mb-1">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="profile.html" class="avatar">H</a>
-                                    <h2><a href="profile.html">Heriberto <span>(Maths)</span></a></h2>
-                                </td>
-                                <td>TE-0d028</td>
-                                <td>Male</td>
-                                <td>3343 Shinn Avenue,USA</td>
-                                <td>1 July 1982</td>
-                                <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="5a323f2833383f282e353734333f382f32281a3f223b372a363f74393537">[email&#160;protected]</a>
-                                </td>
-                                <td>724-552-9237</td>
-                                <td class="text-right">
-                                    <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
-                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <button type="submit" data-toggle="modal" data-target="#delete_employee"
-                                            class="btn btn-danger btn-sm mb-1">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="profile.html" class="avatar">J</a>
-                                    <h2><a href="profile.html">Jean <span>(Maths)</span></a></h2>
-                                </td>
-                                <td>TE-0d029</td>
-                                <td>Male</td>
-                                <td>2297 Aspen Courtc ,USA</td>
-                                <td>1 feb 1985</td>
-                                <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="c7ada2a6a9adafa2a9a3a2b5b4a8a987a2bfa6aab7aba2e9a4a8aa">[email&#160;protected]</a>
-                                </td>
-                                <td>617-330-4593</td>
-                                <td class="text-right">
-                                    <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
-                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <button type="submit" data-toggle="modal" data-target="#delete_employee"
-                                            class="btn btn-danger btn-sm mb-1">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="profile.html" class="avatar">D</a>
-                                    <h2><a href="profile.html">Daniel <span>(Maths)</span></a></h2>
-                                </td>
-                                <td>TE-0d026</td>
-                                <td>Male</td>
-                                <td>4824 Kimberly Way,USA</td>
-                                <td>1 Jan 1985</td>
-                                <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="bcd8ddd2d5d9d0ceccd9ddded3d8c5fcd9c4ddd1ccd0d992dfd3d1">[email&#160;protected]</a>
-                                </td>
-                                <td>616-843-8603</td>
-                                <td class="text-right">
-                                    <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
-                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <button type="submit" data-toggle="modal" data-target="#delete_employee"
-                                            class="btn btn-danger btn-sm mb-1">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="profile.html" class="avatar">D</a>
-                                    <h2><a href="profile.html">Dennis <span>(Maths)</span></a></h2>
-                                </td>
-                                <td>TE-0d027</td>
-                                <td>Male</td>
-                                <td>1441 Argonne street,USA</td>
-                                <td>1 Jan 1985</td>
-                                <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="1377767d7d7a60677072716176617253766b727e637f763d707c7e">[email&#160;protected]</a>
-                                </td>
-                                <td>302-258-6160</td>
-                                <td class="text-right">
-                                    <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
-                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <button type="submit" data-toggle="modal" data-target="#delete_employee"
-                                            class="btn btn-danger btn-sm mb-1">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="profile.html" class="avatar">H</a>
-                                    <h2><a href="profile.html">Heriberto<span>(Maths)</span></a></h2>
-                                </td>
-                                <td>TE-0d028</td>
-                                <td>Male</td>
-                                <td>3343 Shinn Avenue,USA</td>
-                                <td>1 Jan 1985</td>
-                                <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="9af2ffe8f3f8ffe8eef5f7f4f3fff8eff2e8daffe2fbf7eaf6ffb4f9f5f7">[email&#160;protected]</a>
-                                </td>
-                                <td>724-552-9237</td>
-                                <td class="text-right">
-                                    <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
-                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <button type="submit" data-toggle="modal" data-target="#delete_employee"
-                                            class="btn btn-danger btn-sm mb-1">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="profile.html" class="avatar">J</a>
-                                    <h2><a href="profile.html">Jean<span>(Maths)</span></a></h2>
-                                </td>
-                                <td>TE-0d029</td>
-                                <td>Male</td>
-                                <td>2297 Aspen Courtc ,USA</td>
-                                <td>1 Jan 1985</td>
-                                <td><a href="https://dreamguystech.com/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="6a000f0b0400020f040e0f181905042a0f120b071a060f44090507">[email&#160;protected]</a>
-                                </td>
-                                <td>617-330-4593</td>
-                                <td class="text-right">
-                                    <a href="edit-exam.html" class="btn btn-primary btn-sm mb-1">
-                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <button type="submit" data-toggle="modal" data-target="#delete_employee"
-                                            class="btn btn-danger btn-sm mb-1">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                    <div class="row">
+                        {% for path in path_graphs  %}
+                            <div class="col-sm-6">
+                                <div class="card" style="box-shadow: 0 6px 15px rgb(36 37 38 / 3%);">
+                                    <img src="{{ path }}" class="card-img-top" alt="...">
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    {% endif %}
+
 {% endblock %}
 
 {% block js %}

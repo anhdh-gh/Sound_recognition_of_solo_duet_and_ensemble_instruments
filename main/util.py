@@ -9,6 +9,7 @@ import pandas as pd
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from matplotlib import pyplot as plt
+from pyexpat import features
 
 from main.constants import SAMPLE_RATE, HOP_LENGTH, FRAME_SIZE
 from main.extract_features import average_energy, zero_crossing_rate, silence_ratio, dft, find_frequencies
@@ -24,6 +25,101 @@ def get_real_path(relative_path):
 def get_relative_path(real_path):
     fs = FileSystemStorage()
     return fs.url(real_path)
+
+
+def extract_vector_features(path, save_folder):
+    features = np.array([])
+
+    # Đọc file với tần số lấy mẫu là 44100
+    amplitude, _ = librosa.load(path, sr=SAMPLE_RATE)
+
+    # Đặc trưng miền thời gian
+    # Năng lượng trung bình
+    average_energys = np.array([])
+    for i in range(0, len(amplitude), HOP_LENGTH):
+        frame = amplitude[i: i + FRAME_SIZE]
+        value = average_energy(frame)
+        average_energys = np.append(average_energys, value)
+        features = np.append(features, value)
+
+    # Tốc độ đổi dấu
+    zero_crossing_rates = np.array([])
+    for i in range(0, len(amplitude), HOP_LENGTH):
+        frame = amplitude[i: i + FRAME_SIZE]
+        value = zero_crossing_rate(frame)
+        zero_crossing_rates = np.append(zero_crossing_rates, value)
+        features = np.append(features, value)
+
+    # Tỉ lệ khoảng lặng
+    silence_ratios = np.array([])
+    # Ngưỡng biên độ = 5% x biên độ lớn nhất
+    amplitude_threshold = 0.05 * np.max(np.abs(amplitude))
+    # Ngưỡng thời gian = 0.1% x thời gian của file âm thanh
+    time_threshold = 0.001 * len(amplitude)
+    for i in range(0, len(amplitude), HOP_LENGTH):
+        frame = amplitude[i: i + FRAME_SIZE]
+        value = silence_ratio(frame, amplitude_threshold, time_threshold)
+        silence_ratios = np.append(silence_ratios, value)
+        features = np.append(features, value)
+
+    # Đặc trưng miền tần số
+    # Biến đổi dft
+    dft_value = dft(amplitude)
+    frequencies_range = np.linspace(0, SAMPLE_RATE,
+                                    len(dft_value))  # np.linspace(a, b, c): Chia khoảng [a, b] thành c mốc. Mỗi mốc cách nhau (b - a)/(c -1)
+
+    # Do tính chất của phép biến đổi DFT với x(n) là số thục, ta có các giá trị X(k) sẽ bằng X(N-k) với k ≠ 0. Điều này có nghĩa là chúng ta chỉ cần nhìn vào một nửa của kết quả DFT và bỏ thông tin trùng lặp ở nửa kia
+    half = (len(dft_value) + 1) // 2
+    magnitude_spectrum_range = np.abs(dft_value)[:half]  # Trị tuyệt đối để lấy ra được độ lớn
+    frequencies_range = frequencies_range[:half]
+
+    # Các tần số của file
+    frequencies, magnitude_spectrum = find_frequencies(frequencies_range, magnitude_spectrum_range)
+
+    # Số lượng tần số
+    number_frequencies = len(frequencies)
+    features = np.append(features, number_frequencies)
+
+    # Băng thông
+    bandwidth = np.max(frequencies) - np.min(frequencies)
+    features = np.append(features, bandwidth)
+
+    # Vẽ các biểu đồ
+    path_graphs = np.array([])
+    total_samples = len(amplitude)
+    time_axis = np.linspace(0, total_samples / SAMPLE_RATE, total_samples)
+    # Biên độ theo thời gian
+    path_graphs = np.append(
+        path_graphs,
+        draw_graph(time_axis, amplitude, "Thời gian (s)", "Biên độ", "Biên độ theo thời gian", f"{save_folder}/1.png")
+    )
+    # Biên độ theo tần số
+    path_graphs = np.append(path_graphs, draw_graph(frequencies_range, magnitude_spectrum_range, "Tần số (HZ)", "Biên độ",
+                                "Biên độ theo tần số", f"{save_folder}/2.png", 0.3, frequencies,
+                                magnitude_spectrum))
+    # Năng lượng trung bình của các frame
+    path_graphs = np.append(path_graphs, draw_graph(
+        np.arange(0, len(average_energys), 1),
+        average_energys,
+        "Frame", "Năng lượng trung bình",
+        "Năng lượng trung bình của các frame", f"{save_folder}/3.png"
+    ))
+    # Tốc độ đổi dấu của các frame
+    path_graphs = np.append(path_graphs, draw_graph(
+        np.arange(0, len(zero_crossing_rates), 1),
+        zero_crossing_rates,
+        "Frame", "Tốc độ đổi dấu",
+        "Tốc độ đổi dấu của các frame", f"{save_folder}/4.png"
+    ))
+    # Tỉ lệ khoảng lặng
+    path_graphs = np.append(path_graphs, draw_graph(
+        np.arange(0, len(silence_ratios), 1),
+        silence_ratios,
+        "Frame", "Tỉ lệ khoảng lặng",
+        f"Tỉ lệ khoảng lặng của các frame (ngưỡng thời gian: {time_threshold}, ngưỡng biên độ: {amplitude_threshold})",
+        f"{save_folder}/5.png"
+    ))
+    return features, len(silence_ratios), number_frequencies, bandwidth, path_graphs
 
 
 def save_file_input(file_input, input_file_label, nhac_cu):
@@ -44,7 +140,7 @@ def save_file_input(file_input, input_file_label, nhac_cu):
 
 def draw_graph(x_axis, y_axis, x_label="", y_label="", title="", absolute_file_path=get_real_path(""), ratio=1,
                frequencies=[], magnitude_spectrum=[]):
-    fig , ax = plt.subplots()
+    fig, ax = plt.subplots()
 
     len_max = int(len(x_axis) * ratio)
     x_axis = x_axis[:len_max]
