@@ -34,6 +34,7 @@
 - JQuery
 - MySQL
 - Visual Paradigm
+- Bootstrap
 
 ### 5. Hướng dẫn run code
 #### 5.1. Install python:
