@@ -24,4 +24,27 @@
 #### 1.4. Chạy thử và kiểm tra
 
 
+### 2. Biểu đồ class diagram
+![image](https://user-images.githubusercontent.com/79781308/175527343-0c9b1051-7e47-441c-b513-b5512f6ea5db.png)
 
+### 3. Biểu đồ ERD
+![image](https://user-images.githubusercontent.com/79781308/175527418-29e1edb0-3ba6-46f8-b068-e0a2c3ee1a12.png)
+
+### 4. Mội số hình ảnh minh họa
+#### 4.1. Trang xem danh sách tất cả các file
+![image](https://user-images.githubusercontent.com/79781308/175528127-8f6327dd-9b5e-4d43-96ee-3a298593a0c9.png)
+
+#### 4.2. Trang thêm file 
+![image](https://user-images.githubusercontent.com/79781308/175528517-4f24d7d1-69fe-4933-baab-53410f08637c.png)
+
+#### 4.3. Trang xem chi tiết file
+![image](https://user-images.githubusercontent.com/79781308/175528641-c4adc02e-a7fa-429c-862c-97941c5a394a.png)
+
+#### 4.4. Trang xem chỉnh sửa file
+![image](https://user-images.githubusercontent.com/79781308/175528708-1c1459a1-159a-44e7-9c43-d239b511d239.png)
+
+#### 4.5. Trang thêm file đầu vào cần nhận dạng
+![image](https://user-images.githubusercontent.com/79781308/175528879-a5428fd1-858b-4189-a727-1f099d5c1ba1.png)
+
+#### 4.6. Trang kết quả nhận dạng của file đầu vào
+![image](https://user-images.githubusercontent.com/79781308/175529080-81b4bcb2-ec52-4923-a382-a982dacf0520.png)
